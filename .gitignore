@@ -60,3 +60,5 @@ coverage.xml
 *.cover
 *.py,cover
 .hypothesis/
+# CI scratch
+report.json

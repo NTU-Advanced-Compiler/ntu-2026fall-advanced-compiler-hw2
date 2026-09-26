@@ -102,7 +102,11 @@ jobs:
               -v "$PWD":/work:ro -w /work \
               "${{ steps.ref.outputs.image }}:${{ inputs.tag }}" \
               python3 tools/selfcheck.py --timeout "$stage_timeout" --json \
-              > report.json
+              > report.json || true
+            # selfcheck exits non-zero whenever the score is short of
+            # full marks, which is the expected case here: the starter
+            # scores 25 of 100. The check below is what decides the step,
+            # and it fails loudly if report.json is missing or malformed.
             python3 -c "import json,sys;r=json.load(open('report.json'));[print('  FAILED',x['id'],'('+x['category']+')','::',' | '.join(x['messages'])) for x in r['results'] if not x['passed']];print('$platform starter score:',r['score'],'/',r['max_score']);sys.exit(0 if r['score']==25 else 1)"
             echo "::endgroup::"
           done
