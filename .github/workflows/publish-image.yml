@@ -90,13 +90,20 @@ jobs:
           set -eu
           for platform in linux/amd64 linux/arm64; do
             echo "::group::$platform"
-            score=$(docker run --rm --platform "$platform" \
+            # An emulated arm64 container is much slower than a native
+            # one, so each pipeline stage gets more time there. This is a
+            # property of QEMU on an amd64 runner, not of the environment
+            # a student or a TA actually grades in.
+            case "$platform" in
+              linux/arm64) stage_timeout=120 ;;
+              *)           stage_timeout=10  ;;
+            esac
+            docker run --rm --platform "$platform" \
               -v "$PWD":/work:ro -w /work \
               "${{ steps.ref.outputs.image }}:${{ inputs.tag }}" \
-              python3 tools/selfcheck.py --json \
-              | python3 -c 'import json,sys; print(json.load(sys.stdin)["score"])')
-            echo "$platform starter score: $score"
-            test "$score" = "25"
+              python3 tools/selfcheck.py --timeout "$stage_timeout" --json \
+              > report.json
+            python3 -c "import json,sys;r=json.load(open('report.json'));[print('  FAILED',x['id'],'('+x['category']+')','::',' | '.join(x['messages'])) for x in r['results'] if not x['passed']];print('$platform starter score:',r['score'],'/',r['max_score']);sys.exit(0 if r['score']==25 else 1)"
             echo "::endgroup::"
           done
 
