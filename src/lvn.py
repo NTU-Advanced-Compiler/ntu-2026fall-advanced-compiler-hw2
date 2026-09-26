@@ -10,6 +10,53 @@ from util import flatten
 # A Value uniquely represents a computation in terms of sub-values.
 Value = namedtuple('Value', ['op', 'args'])
 
+# `brili` stores Bril integers as signed 64-bit values and wraps on
+# overflow, and it reads its program with a JSON parser that keeps
+# numbers as doubles, so an integer beyond 2**53 does not round-trip.
+INT_BITS = 64
+INT_MIN = -(2 ** (INT_BITS - 1))
+SAFE_INT = 2 ** 53
+
+
+def wrap_int(n):
+    """Wrap a Python int to a signed 64-bit value, as `brili` does."""
+    return (n - INT_MIN) % (2 ** INT_BITS) + INT_MIN
+
+
+def trunc_div(a, b):
+    """Integer division truncating toward zero.
+
+    Python's `//` floors, so `-3 // 2` is `-2` while `brili` yields `-1`.
+    """
+    if b == 0:
+        raise ZeroDivisionError('division by zero')
+    quotient = abs(a) // abs(b)
+    return -quotient if (a < 0) != (b < 0) else quotient
+
+
+def func_var_names(func):
+    """Every variable name that appears anywhere in a function."""
+    names = {arg['name'] for arg in func.get('args', [])}
+    for instr in func['instrs']:
+        if 'dest' in instr:
+            names.add(instr['dest'])
+        names.update(instr.get('args', []))
+    return names
+
+
+def fresh_prefix(names):
+    """Pick a prefix for generated temporaries that collides with no
+    existing variable name.
+
+    A program may legally contain a variable called `lvn.1`. With a fixed
+    prefix, a generated temporary can take that same name and overwrite
+    the user's variable, which silently changes what the program prints.
+    """
+    prefix = 'lvn.'
+    while any(name.startswith(prefix) for name in names):
+        prefix = '_' + prefix
+    return prefix
+
 
 class Numbering(dict):
     """A dict mapping anything to numbers that can generate new numbers
@@ -64,7 +111,7 @@ def read_first(instrs):
     return read
 
 
-def lvn_block(block, lookup, canonicalize, fold):
+def lvn_block(block, lookup, canonicalize, fold, prefix='lvn.'):
     """Use local value numbering to optimize a basic block. Modify the
     instructions in place.
 
@@ -74,6 +121,8 @@ def lvn_block(block, lookup, canonicalize, fold):
       a canonical form.
     - `fold`. Arguments: a number-to-constant map  and a value. Return a
       new constant if it can be computed directly (or None otherwise).
+    - `prefix`. Prefix for generated temporaries. Must not be a prefix of
+      any variable name already used in the function.
     """
     # The current value of every defined variable. We'll update this
     # every time a variable is modified. Different variables can have
@@ -167,7 +216,7 @@ def lvn_block(block, lookup, canonicalize, fold):
                 # We must put the value in a new variable so it can be
                 # reused by another computation in the feature (in case
                 # the current variable name is reassigned before then).
-                var = 'lvn.{}'.format(newnum)
+                var = '{}{}'.format(prefix, newnum)
 
             # Record the variable name and update the instruction.
             num2vars[newnum] = [var]
@@ -200,10 +249,10 @@ def _lookup(value2num, value):
 
 
 FOLDABLE_OPS = {
-    'add': lambda a, b: a + b,
-    'mul': lambda a, b: a * b,
-    'sub': lambda a, b: a - b,
-    'div': lambda a, b: a // b,
+    'add': lambda a, b: wrap_int(a + b),
+    'mul': lambda a, b: wrap_int(a * b),
+    'sub': lambda a, b: wrap_int(a - b),
+    'div': lambda a, b: wrap_int(trunc_div(a, b)),
     'gt': lambda a, b: a > b,
     'lt': lambda a, b: a < b,
     'ge': lambda a, b: a >= b,
@@ -220,7 +269,13 @@ def _fold(num2const, value):
     if value.op in FOLDABLE_OPS:
         try:
             const_args = [num2const[n] for n in value.args]
-            return FOLDABLE_OPS[value.op](*const_args)
+            result = FOLDABLE_OPS[value.op](*const_args)
+            if isinstance(result, int) and not isinstance(result, bool) \
+               and abs(result) > SAFE_INT:
+                # `brili` could not represent this constant exactly, so
+                # folding it would change the program's behavior.
+                return None
+            return result
         except KeyError:  # At least one argument is not a constant.
             if value.op in {'eq', 'ne', 'le', 'ge'} and \
                value.args[0] == value.args[1]:
@@ -262,6 +317,7 @@ def lvn(bril):
     in every function.
     """
     for func in bril['functions']:
+        prefix = fresh_prefix(func_var_names(func))
         blocks = list(form_blocks(func['instrs']))
         for block in blocks:
             lvn_block(
@@ -269,6 +325,7 @@ def lvn(bril):
                 lookup=_lookup,
                 canonicalize=_canonicalize,
                 fold=_fold,
+                prefix=prefix,
             )
         func['instrs'] = flatten(blocks)
 
