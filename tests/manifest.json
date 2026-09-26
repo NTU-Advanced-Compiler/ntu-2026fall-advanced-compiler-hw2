@@ -1,0 +1,350 @@
+{
+  "comment": [
+    "Every graded test case for HW2. All of them ship in this repository:",
+    "there are no hidden cases. The evaluator in tools/ is the same one the",
+    "TAs grade with, so `bash verify_hw2.sh <id> test` gives you your score.",
+    "",
+    "'criterion' is how much optimization a case requires:",
+    "  max_dyn_inst    - must execute fewer instructions than the original,",
+    "                    and at most this many",
+    "  reduce_at_least - must remove at least this many dynamic instructions",
+    "  preserve_only   - no reduction required; just do not change behavior",
+    "",
+    "Every threshold is what the TA reference solution actually achieves."
+  ],
+  "cases": [
+    {
+      "id": "public_1",
+      "file": "tests/local_dce/testcase_1.bril",
+      "mode": "local_dce",
+      "category": "unused_definitions",
+      "points": 5,
+      "arg_sets": [
+        []
+      ],
+      "criterion": {
+        "type": "max_dyn_inst",
+        "value": 4
+      }
+    },
+    {
+      "id": "public_2",
+      "file": "tests/local_dce/testcase_2.bril",
+      "mode": "local_dce",
+      "category": "overwritten_definitions",
+      "points": 5,
+      "arg_sets": [
+        []
+      ],
+      "criterion": {
+        "type": "max_dyn_inst",
+        "value": 2
+      }
+    },
+    {
+      "id": "public_3",
+      "file": "tests/local_dce/testcase_3.bril",
+      "mode": "local_dce",
+      "category": "unused_definitions",
+      "points": 5,
+      "arg_sets": [
+        []
+      ],
+      "criterion": {
+        "type": "max_dyn_inst",
+        "value": 4
+      }
+    },
+    {
+      "id": "public_4",
+      "file": "tests/local_dce/testcase_4.bril",
+      "mode": "local_dce",
+      "category": "unused_definitions",
+      "points": 5,
+      "arg_sets": [
+        []
+      ],
+      "criterion": {
+        "type": "max_dyn_inst",
+        "value": 4
+      }
+    },
+    {
+      "id": "public_5",
+      "file": "tests/lvn+local_dce/testcase_5.bril",
+      "mode": "lvn+local_dce",
+      "category": "lvn_cleanup",
+      "points": 5,
+      "arg_sets": [
+        []
+      ],
+      "criterion": {
+        "type": "max_dyn_inst",
+        "value": 2
+      }
+    },
+    {
+      "id": "public_6",
+      "file": "tests/lvn+local_dce/testcase_6.bril",
+      "mode": "lvn+local_dce",
+      "category": "lvn_cleanup",
+      "points": 5,
+      "arg_sets": [
+        []
+      ],
+      "criterion": {
+        "type": "max_dyn_inst",
+        "value": 2
+      }
+    },
+    {
+      "id": "public_7",
+      "file": "tests/lvn+local_dce/testcase_7.bril",
+      "mode": "lvn+local_dce",
+      "category": "lvn_cleanup",
+      "points": 5,
+      "arg_sets": [
+        []
+      ],
+      "criterion": {
+        "type": "max_dyn_inst",
+        "value": 2
+      }
+    },
+    {
+      "id": "public_8",
+      "file": "tests/lvn+local_dce/testcase_8.bril",
+      "mode": "lvn+local_dce",
+      "category": "lvn_cleanup",
+      "points": 5,
+      "arg_sets": [
+        []
+      ],
+      "criterion": {
+        "type": "max_dyn_inst",
+        "value": 4
+      }
+    },
+    {
+      "id": "public_9",
+      "file": "tests/safety/testcase_9.bril",
+      "mode": "local_dce",
+      "category": "correctness_safeguards",
+      "points": 5,
+      "arg_sets": [
+        []
+      ],
+      "criterion": {
+        "type": "preserve_only"
+      },
+      "note": "value live in a later block"
+    },
+    {
+      "id": "public_10",
+      "file": "tests/safety/testcase_10.bril",
+      "mode": "local_dce",
+      "category": "correctness_safeguards",
+      "points": 5,
+      "arg_sets": [
+        []
+      ],
+      "criterion": {
+        "type": "preserve_only"
+      },
+      "note": "call has effects even with an unused dest"
+    },
+    {
+      "id": "public_11",
+      "file": "tests/safety/testcase_11.bril",
+      "mode": "local_dce",
+      "category": "correctness_safeguards",
+      "points": 5,
+      "arg_sets": [
+        [
+          5
+        ],
+        [
+          0
+        ],
+        [
+          1
+        ]
+      ],
+      "criterion": {
+        "type": "preserve_only"
+      },
+      "note": "loop-carried values are live out of their block"
+    },
+    {
+      "id": "public_12",
+      "file": "tests/safety/testcase_12.bril",
+      "mode": "local_dce",
+      "category": "correctness_safeguards",
+      "points": 5,
+      "arg_sets": [
+        [
+          5
+        ],
+        [
+          0
+        ],
+        [
+          -4
+        ]
+      ],
+      "criterion": {
+        "type": "preserve_only"
+      },
+      "note": "overwritten def is read in between"
+    },
+    {
+      "id": "public_interface_1",
+      "file": "tests/additional/interface_1.bril",
+      "mode": "local_dce",
+      "category": "interface",
+      "points": 5,
+      "arg_sets": [
+        [
+          4
+        ],
+        [
+          0
+        ],
+        [
+          -7
+        ]
+      ],
+      "criterion": {
+        "type": "preserve_only"
+      },
+      "note": "two functions and program arguments survive the round trip unchanged"
+    },
+    {
+      "id": "public_unused_1",
+      "file": "tests/additional/unused_1.bril",
+      "mode": "local_dce",
+      "category": "unused_definitions",
+      "points": 5,
+      "arg_sets": [
+        []
+      ],
+      "criterion": {
+        "type": "max_dyn_inst",
+        "value": 2
+      },
+      "note": "a four-deep dead chain; needs repeating to a fixed point"
+    },
+    {
+      "id": "public_unused_2",
+      "file": "tests/additional/unused_2.bril",
+      "mode": "local_dce",
+      "category": "unused_definitions",
+      "points": 5,
+      "arg_sets": [
+        [
+          4
+        ],
+        [
+          0
+        ]
+      ],
+      "criterion": {
+        "type": "max_dyn_inst",
+        "value": 4
+      },
+      "note": "dead definitions in more than one function"
+    },
+    {
+      "id": "public_unused_3",
+      "file": "tests/additional/unused_3.bril",
+      "mode": "local_dce",
+      "category": "unused_definitions",
+      "points": 5,
+      "arg_sets": [
+        [
+          -3
+        ],
+        [
+          5
+        ]
+      ],
+      "criterion": {
+        "type": "reduce_at_least",
+        "value": 1
+      },
+      "note": "dead definitions inside branch targets"
+    },
+    {
+      "id": "public_killed_1",
+      "file": "tests/additional/killed_1.bril",
+      "mode": "local_dce",
+      "category": "overwritten_definitions",
+      "points": 5,
+      "arg_sets": [
+        []
+      ],
+      "criterion": {
+        "type": "max_dyn_inst",
+        "value": 2
+      },
+      "note": "a variable reassigned twice before its first use"
+    },
+    {
+      "id": "public_killed_2",
+      "file": "tests/additional/killed_2.bril",
+      "mode": "local_dce",
+      "category": "overwritten_definitions",
+      "points": 5,
+      "arg_sets": [
+        []
+      ],
+      "criterion": {
+        "type": "max_dyn_inst",
+        "value": 4
+      },
+      "note": "two independent variables each killed once"
+    },
+    {
+      "id": "public_killed_3",
+      "file": "tests/additional/killed_3.bril",
+      "mode": "local_dce",
+      "category": "overwritten_definitions",
+      "points": 5,
+      "arg_sets": [
+        []
+      ],
+      "criterion": {
+        "type": "reduce_at_least",
+        "value": 1
+      },
+      "note": "one killed definition, plus an earlier one read in between that must stay"
+    },
+    {
+      "id": "public_killed_4",
+      "file": "tests/additional/killed_4.bril",
+      "mode": "local_dce",
+      "category": "overwritten_definitions",
+      "points": 5,
+      "arg_sets": [
+        [
+          3
+        ],
+        [
+          0
+        ]
+      ],
+      "criterion": {
+        "type": "reduce_at_least",
+        "value": 3
+      },
+      "note": "a killed definition inside a loop body"
+    }
+  ],
+  "category_weights": {
+    "interface": 5,
+    "unused_definitions": 30,
+    "overwritten_definitions": 25,
+    "correctness_safeguards": 20,
+    "lvn_cleanup": 20
+  }
+}

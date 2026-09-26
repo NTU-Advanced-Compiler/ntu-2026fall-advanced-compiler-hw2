@@ -1,0 +1,11 @@
+# Unused: dead definitions in more than one function.
+@helper(x: int): int {
+  dead: int = const 7;
+  y: int = add x x;
+  ret y;
+}
+@main(n: int) {
+  garbage: int = const 99;
+  r: int = call @helper n;
+  print r;
+}

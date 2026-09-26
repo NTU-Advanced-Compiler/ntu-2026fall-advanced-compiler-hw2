@@ -1,0 +1,12 @@
+# Safety: a call has effects even when its destination is never used.
+# Removing `a` here would silence the print inside @side.
+@side(): int {
+  v: int = const 9;
+  print v;
+  ret v;
+}
+@main {
+  a: int = call @side;
+  b: int = const 2;
+  print b;
+}

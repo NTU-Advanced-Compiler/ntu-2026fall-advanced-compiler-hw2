@@ -1,0 +1,10 @@
+# Overwritten: one definition is killed, but an earlier one is read in
+# between and must stay.
+@main {
+  x: int = const 5;
+  y: int = id x;
+  x: int = const 6;
+  x: int = const 7;
+  s: int = add x y;
+  print s;
+}

@@ -1,0 +1,9 @@
+# Safety: a value defined in one block and used in a later block must
+# survive. A pass that only looks inside a single block may wrongly
+# decide that `x` is unused where it is defined.
+@main {
+  x: int = const 7;
+  jmp .next;
+.next:
+  print x;
+}

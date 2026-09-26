@@ -1,4 +1,4 @@
-# CMD: bril2json < {filename} | python3 ../../src/lvn.py | python3 ../../src/local_dce.py | bril2txt
+# CMD: bril2json < {filename} | python3 src/lvn.py | python3 src/local_dce.py | bril2txt
 
 @main {
   a: int = const 4;

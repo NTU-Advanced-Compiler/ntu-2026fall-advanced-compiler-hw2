@@ -1,0 +1,10 @@
+# Unused: a dead chain. Removing `d` makes `c` dead, and so on, so the
+# pass has to iterate to a fixed point.
+@main {
+  a: int = const 1;
+  b: int = add a a;
+  c: int = add b b;
+  d: int = add c c;
+  keep: int = const 42;
+  print keep;
+}

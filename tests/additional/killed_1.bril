@@ -1,0 +1,7 @@
+# Overwritten: a variable reassigned twice before its first use.
+@main {
+  x: int = const 1;
+  x: int = const 2;
+  x: int = const 3;
+  print x;
+}

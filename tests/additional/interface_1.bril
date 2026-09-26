@@ -1,0 +1,11 @@
+# Interface: two functions and program arguments must survive the round
+# trip through the student's pass unchanged in behavior.
+@add2(x: int): int {
+  two: int = const 2;
+  r: int = add x two;
+  ret r;
+}
+@main(n: int) {
+  v: int = call @add2 n;
+  print v;
+}

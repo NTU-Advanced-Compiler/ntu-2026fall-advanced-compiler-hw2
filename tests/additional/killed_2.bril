@@ -1,0 +1,9 @@
+# Overwritten: two independent variables each killed once.
+@main {
+  a: int = const 1;
+  b: int = const 2;
+  a: int = const 3;
+  b: int = const 4;
+  s: int = add a b;
+  print s;
+}

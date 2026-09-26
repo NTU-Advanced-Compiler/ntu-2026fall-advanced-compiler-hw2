@@ -1,0 +1,14 @@
+# Unused: dead definitions inside branch targets.
+@main(n: int) {
+  zero: int = const 0;
+  c: bool = lt n zero;
+  br c .neg .pos;
+.neg:
+  junk: int = const 11;
+  print n;
+  ret;
+.pos:
+  junk2: int = const 22;
+  print zero;
+  ret;
+}

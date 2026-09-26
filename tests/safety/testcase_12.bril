@@ -1,0 +1,8 @@
+# Safety: a definition that is reassigned later is still needed if it is
+# read in between. `x` is overwritten, but the overwriting instruction
+# reads the old value.
+@main(n: int) {
+  x: int = id n;
+  x: int = add x x;
+  print x;
+}

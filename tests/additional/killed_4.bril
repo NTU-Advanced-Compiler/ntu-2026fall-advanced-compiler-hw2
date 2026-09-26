@@ -1,0 +1,15 @@
+# Overwritten: a killed definition inside a loop body.
+@main(n: int) {
+  i: int = const 0;
+  one: int = const 1;
+.loop:
+  c: bool = lt i n;
+  br c .body .done;
+.body:
+  t: int = const 100;
+  t: int = const 200;
+  i: int = add i one;
+  jmp .loop;
+.done:
+  print i;
+}
