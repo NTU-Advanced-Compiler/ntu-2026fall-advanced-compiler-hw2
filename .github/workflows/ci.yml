@@ -1,0 +1,56 @@
+# Maintainer CI. This is NOT a student autograder.
+#
+# GitHub Classroom is not used this semester: NTU COOL ZIP archives are
+# graded by the TA batch tool. This workflow only protects the starter
+# repository itself, by checking that
+#   1. the homework image still builds, and
+#   2. the reference solution still scores 100/100, and
+#   3. the unmodified starter still scores 25 (interface plus the
+#      safeguard cases, which a pass that does nothing also satisfies).
+#
+# It never runs on student submissions.
+name: Starter repository checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  public-suite:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build the homework image
+        run: docker build -t acd-hw2:ci .
+
+      - name: Unmodified starter must score 25
+        run: |
+          set -eux
+          score=$(docker run --rm -v "$PWD":/work:ro -w /work acd-hw2:ci \
+            python3 tools/selfcheck.py --json | python3 -c \
+            'import json,sys; print(json.load(sys.stdin)["score"])')
+          test "$score" = "25"
+
+      - name: Reference solution must score full marks
+        env:
+          REFERENCE_B64: ${{ secrets.REFERENCE_DCE_B64 }}
+        run: |
+          set -eu
+          if [ -z "${REFERENCE_B64:-}" ]; then
+            echo "No reference solution secret configured; skipping."
+            exit 0
+          fi
+          mkdir -p /tmp/ref
+          printf '%s' "$REFERENCE_B64" | base64 -d > /tmp/ref/local_dce.py
+          score=$(docker run --rm -v "$PWD":/work:ro -v /tmp/ref:/ref:ro \
+            -w /work acd-hw2:ci \
+            python3 tools/selfcheck.py --src /ref --json | python3 -c \
+            'import json,sys; d=json.load(sys.stdin); print(d["score"],d["max_score"])')
+          echo "reference scored: $score"
+          test "$score" = "100 100"
