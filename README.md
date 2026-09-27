@@ -45,6 +45,7 @@ homework-directory/
 ├── bril/
 ├── run_testcase.sh
 ├── verify_hw2.sh
+├── Dockerfile
 └── README.md
 ```
 
