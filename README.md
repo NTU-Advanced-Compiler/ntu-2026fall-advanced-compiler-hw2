@@ -115,6 +115,10 @@ For test cases in `tests/local_dce`, dynamic instruction count can be reduced to
    ```
 4. Upload the archive to NTU COOL. Do not include `bril/`, screenshots or test output.
 
+**Resubmission is not allowed.** If you need to replace a submission, contact the TAs by email.
+
+A late submission loses 10 points for each day it is late, and a submission more than five days late receives zero.
+
 ## Do and Don't
 
 - You are allowed to modify any part of the starter code within the src/ directory to suit your approach. While the current structure serves as a guideline, ensuring the driver script functions properly is key for grading.
