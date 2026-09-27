@@ -115,7 +115,7 @@ For test cases in `tests/local_dce`, dynamic instruction count can be reduced to
    ```
 4. Upload the archive to NTU COOL. Do not include `bril/`, screenshots or test output.
 
-**Resubmission is not allowed.** If you need to replace a submission, contact the TAs by email.
+**Resubmission is not allowed.** If you need to replace a submission, write to <llvm@csie.ntu.edu.tw> with the subject `[AC-HW2][Summary-Of-Your-Issue]`.
 
 A late submission loses 10 points for each day it is late, and a submission more than five days late receives zero.
 
