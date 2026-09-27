@@ -64,6 +64,8 @@ Your pass must preserve the behavior of the input program. For every test we com
 
 `python3 src/local_dce.py` must read one Bril JSON program from stdin and write exactly one Bril JSON program to stdout, then exit 0. Debugging output belongs on stderr.
 
+Your code runs under Python 3.10 and may use only the standard library. Grading has no network access, so a third-party import fails every test case.
+
 ## Running and Testing
 
 1. To check your work the way it is graded:
