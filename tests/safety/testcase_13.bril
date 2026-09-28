@@ -1,0 +1,15 @@
+# Safety: an effectful definition that is overwritten before any read.
+# `a` is killed by the next instruction, but the call still prints inside
+# @side, so the call must survive the kill. `dead` is the only thing here
+# that may be removed.
+@side(): int {
+  v: int = const 9;
+  print v;
+  ret v;
+}
+@main {
+  a: int = call @side;
+  a: int = const 2;
+  dead: int = const 77;
+  print a;
+}

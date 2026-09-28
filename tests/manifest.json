@@ -28,20 +28,6 @@
       }
     },
     {
-      "id": "public_2",
-      "file": "tests/local_dce/testcase_2.bril",
-      "mode": "local_dce",
-      "category": "overwritten_definitions",
-      "points": 5,
-      "arg_sets": [
-        []
-      ],
-      "criterion": {
-        "type": "max_dyn_inst",
-        "value": 2
-      }
-    },
-    {
       "id": "public_3",
       "file": "tests/local_dce/testcase_3.bril",
       "mode": "local_dce",
@@ -198,6 +184,21 @@
       "note": "overwritten def is read in between"
     },
     {
+      "id": "public_13",
+      "file": "tests/safety/testcase_13.bril",
+      "mode": "local_dce",
+      "category": "correctness_safeguards",
+      "points": 5,
+      "arg_sets": [
+        []
+      ],
+      "criterion": {
+        "type": "reduce_at_least",
+        "value": 1
+      },
+      "note": "effectful def overwritten before any read; the call must survive the kill"
+    },
+    {
       "id": "public_interface_1",
       "file": "tests/additional/interface_1.bril",
       "mode": "local_dce",
@@ -343,8 +344,8 @@
   "category_weights": {
     "interface": 5,
     "unused_definitions": 30,
-    "overwritten_definitions": 25,
-    "correctness_safeguards": 20,
+    "overwritten_definitions": 20,
+    "correctness_safeguards": 25,
     "lvn_cleanup": 20
   }
 }
